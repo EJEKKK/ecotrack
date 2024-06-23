@@ -9,10 +9,17 @@
 <body>
     <header>
         <h1>ECOTRACK</h1>
-        <fb:login-button 
-            scope="public_profile,email"
+        <div id="fb-root"></div>
+        <div class="fb-login-button" 
+            data-width="" 
+            data-size="large" 
+            data-button-type="login_with" 
+            data-layout="default" 
+            data-auto-logout-link="false" 
+            data-use-continue-as="false" 
+            data-scope="public_profile,email"
             onlogin="checkLoginState();">
-        </fb:login-button>
+        </div>
     </header>
     <main>
         <section id="reportSection" style="display:none;">
@@ -71,7 +78,7 @@
                     document.getElementById('reportSection').style.display = 'block';
                     document.getElementById('reportsSection').style.display = 'block';
                     // Hide the login button
-                    document.querySelector('fb\\:login-button').style.display = 'none';
+                    document.querySelector('.fb-login-button').style.display = 'none';
                 });
             } else {
                 // Not logged into your webpage or unable to tell.
