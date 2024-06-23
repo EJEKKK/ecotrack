@@ -9,6 +9,15 @@
 <body>
     <header>
         <h1>ECOTRACK</h1>
+        <nav>
+            <ul>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#reportSection">Report Issue</a></li>
+                <li><a href="#leaderboardSection">Leaderboard</a></li>
+                <li><a href="#profileSection">Profile</a></li>
+                <li><a href="#contactSection">Contact</a></li>
+            </ul>
+        </nav>
         <div id="fb-root"></div>
         <div class="fb-login-button" 
             data-width="" 
@@ -22,6 +31,10 @@
         </div>
     </header>
     <main>
+        <section id="home">
+            <h2>Welcome to ECOTRACK</h2>
+            <p>Join us in protecting our environment by reporting local environmental issues.</p>
+        </section>
         <section id="reportSection" style="display:none;">
             <h2>Report Environmental Issue</h2>
             <form id="reportForm">
@@ -35,6 +48,30 @@
         <section id="reportsSection" style="display:none;">
             <h2>Reported Issues</h2>
             <div id="reports"></div>
+        </section>
+        <section id="leaderboardSection" style="display:none;">
+            <h2>Leaderboard</h2>
+            <div id="leaderboard">
+                <!-- Leaderboard content will go here -->
+            </div>
+        </section>
+        <section id="profileSection" style="display:none;">
+            <h2>User Profile</h2>
+            <div id="profile">
+                <!-- User profile content will go here -->
+            </div>
+        </section>
+        <section id="contactSection">
+            <h2>Contact Us</h2>
+            <form id="contactForm">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required>
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+                <label for="message">Message:</label>
+                <textarea id="message" name="message" required></textarea>
+                <button type="submit">Send Message</button>
+            </form>
         </section>
     </main>
     <footer>
@@ -70,9 +107,13 @@
             if (response.status === 'connected') {
                 document.getElementById('reportSection').style.display = 'block';
                 document.getElementById('reportsSection').style.display = 'block';
+                document.getElementById('leaderboardSection').style.display = 'block';
+                document.getElementById('profileSection').style.display = 'block';
             } else {
                 document.getElementById('reportSection').style.display = 'none';
                 document.getElementById('reportsSection').style.display = 'none';
+                document.getElementById('leaderboardSection').style.display = 'none';
+                document.getElementById('profileSection').style.display = 'none';
             }
         }
     </script>
