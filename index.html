@@ -39,10 +39,11 @@
         <section id="reportSection" style="display:none;">
             <h2>Report Environmental Issue</h2>
             <form id="reportForm">
+                <input type="hidden" id="reportId" name="reportId">
                 <label for="description">Description:</label>
                 <textarea id="description" name="description" required></textarea>
                 <label for="photo">Upload Photo:</label>
-                <input type="file" id="photo" name="photo" accept="image/*" required>
+                <input type="file" id="photo" name="photo" accept="image/*">
                 <button type="submit">Submit Report</button>
             </form>
         </section>
@@ -130,30 +131,47 @@
 
         document.getElementById('reportForm').addEventListener('submit', function(event) {
             event.preventDefault();
+            const reportId = document.getElementById('reportId').value;
             const description = document.getElementById('description').value;
             const photo = document.getElementById('photo').files[0];
 
-            if (description && photo) {
-                const reader = new FileReader();
-                reader.onloadend = function() {
+            if (description) {
+                if (photo) {
+                    const reader = new FileReader();
+                    reader.onloadend = function() {
+                        const report = {
+                            id: reportId ? parseInt(reportId) : Date.now(),
+                            description: description,
+                            photo: reader.result
+                        };
+                        saveReport(report);
+                        document.getElementById('reportForm').reset();
+                        console.log('Report submitted successfully');
+                    };
+                    reader.readAsDataURL(photo);
+                } else {
                     const report = {
-                        id: Date.now(),
+                        id: reportId ? parseInt(reportId) : Date.now(),
                         description: description,
-                        photo: reader.result
+                        photo: null
                     };
                     saveReport(report);
                     document.getElementById('reportForm').reset();
                     console.log('Report submitted successfully');
-                };
-                reader.readAsDataURL(photo);
+                }
             } else {
-                console.log('Description or photo missing');
+                console.log('Description is missing');
             }
         });
 
         function saveReport(report) {
             let reports = JSON.parse(localStorage.getItem('reports')) || [];
-            reports.push(report);
+            const existingReportIndex = reports.findIndex(r => r.id === report.id);
+            if (existingReportIndex !== -1) {
+                reports[existingReportIndex] = report;
+            } else {
+                reports.push(report);
+            }
             localStorage.setItem('reports', JSON.stringify(reports));
             loadReports();
         }
@@ -167,7 +185,7 @@
                 reportDiv.className = 'report';
                 reportDiv.innerHTML = `
                     <p>${report.description}</p>
-                    <img src="${report.photo}" alt="Report Photo" style="width:100%;max-width:300px;">
+                    ${report.photo ? `<img src="${report.photo}" alt="Report Photo" style="width:100%;max-width:300px;">` : ''}
                     <button onclick="editReport(${report.id})">Edit</button>
                     <button onclick="deleteReport(${report.id})">Delete</button>
                 `;
@@ -179,9 +197,10 @@
             const reports = JSON.parse(localStorage.getItem('reports')) || [];
             const report = reports.find(r => r.id === id);
             if (report) {
+                document.getElementById('reportId').value = report.id;
                 document.getElementById('description').value = report.description;
-                // Handle photo editing if necessary
-                deleteReport(id);
+                // Note: For photo editing, we would need to handle this differently as we can't set a file input's value programmatically
+                // You might want to add a separate input for editing the photo or inform the user that they need to re-upload the photo.
             }
         }
 
