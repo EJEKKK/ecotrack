@@ -40,15 +40,16 @@
     <footer>
         <p>&copy; 2024 ECOTRACK. All rights reserved.</p>
     </footer>
-    <div id="status"></div>
+    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script>
     <script>
         window.fbAsyncInit = function() {
             FB.init({
-                appId      : '{985350543370060}',
+                appId      : '436785522663409', // Replace with your Facebook app ID
                 cookie     : true,
                 xfbml      : true,
-                version    : '{v20.0}'
+                version    : 'v20.0'
             });
+
             FB.AppEvents.logPageView();   
         };
 
@@ -68,11 +69,20 @@
 
         function statusChangeCallback(response) {
             if (response.status === 'connected') {
-                document.getElementById('reportSection').style.display = 'block';
-                document.getElementById('reportsSection').style.display = 'block';
+                // Logged into your webpage and Facebook.
+                console.log('Successfully logged in with Facebook');
+                FB.api('/me?fields=name,email', function(response) {
+                    console.log('Successful login for: ' + response.name);
+                    console.log('Email: ' + response.email);
+                    // Show the report sections
+                    document.getElementById('reportSection').style.display = 'block';
+                    document.getElementById('reportsSection').style.display = 'block';
+                    // Hide the login button
+                    document.querySelector('.fb-login-button').style.display = 'none';
+                });
             } else {
-                document.getElementById('reportSection').style.display = 'none';
-                document.getElementById('reportsSection').style.display = 'none';
+                // Not logged into your webpage or unable to tell.
+                console.log('User not authenticated');
             }
         }
     </script>
