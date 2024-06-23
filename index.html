@@ -40,16 +40,15 @@
     <footer>
         <p>&copy; 2024 ECOTRACK. All rights reserved.</p>
     </footer>
-    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script>
+    <div id="status"></div>
     <script>
         window.fbAsyncInit = function() {
             FB.init({
-                appId      : '436785522663409', // Replace with your Facebook app ID
+                appId      : '436785522663409',
                 cookie     : true,
                 xfbml      : true,
                 version    : 'v20.0'
             });
-
             FB.AppEvents.logPageView();   
         };
 
@@ -69,20 +68,11 @@
 
         function statusChangeCallback(response) {
             if (response.status === 'connected') {
-                // Logged into your webpage and Facebook.
-                console.log('Successfully logged in with Facebook');
-                FB.api('/me?fields=name,email', function(response) {
-                    console.log('Successful login for: ' + response.name);
-                    console.log('Email: ' + response.email);
-                    // Show the report sections
-                    document.getElementById('reportSection').style.display = 'block';
-                    document.getElementById('reportsSection').style.display = 'block';
-                    // Hide the login button
-                    document.querySelector('.fb-login-button').style.display = 'none';
-                });
+                document.getElementById('reportSection').style.display = 'block';
+                document.getElementById('reportsSection').style.display = 'block';
             } else {
-                // Not logged into your webpage or unable to tell.
-                console.log('User not authenticated');
+                document.getElementById('reportSection').style.display = 'none';
+                document.getElementById('reportsSection').style.display = 'none';
             }
         }
     </script>
