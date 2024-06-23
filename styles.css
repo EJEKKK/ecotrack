@@ -75,3 +75,13 @@ form button {
 form button:hover {
     background-color: #45a049;
 }
+
+.report {
+    border-bottom: 1px solid #ddd;
+    padding: 10px 0;
+}
+
+.report img {
+    display: block;
+    margin-top: 10px;
+}
