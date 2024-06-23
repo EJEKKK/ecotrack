@@ -137,6 +137,7 @@
                 const reader = new FileReader();
                 reader.onloadend = function() {
                     const report = {
+                        id: Date.now(),
                         description: description,
                         photo: reader.result
                     };
@@ -167,9 +168,28 @@
                 reportDiv.innerHTML = `
                     <p>${report.description}</p>
                     <img src="${report.photo}" alt="Report Photo" style="width:100%;max-width:300px;">
+                    <button onclick="editReport(${report.id})">Edit</button>
+                    <button onclick="deleteReport(${report.id})">Delete</button>
                 `;
                 reportsContainer.appendChild(reportDiv);
             });
+        }
+
+        function editReport(id) {
+            const reports = JSON.parse(localStorage.getItem('reports')) || [];
+            const report = reports.find(r => r.id === id);
+            if (report) {
+                document.getElementById('description').value = report.description;
+                // Handle photo editing if necessary
+                deleteReport(id);
+            }
+        }
+
+        function deleteReport(id) {
+            let reports = JSON.parse(localStorage.getItem('reports')) || [];
+            reports = reports.filter(report => report.id !== id);
+            localStorage.setItem('reports', JSON.stringify(reports));
+            loadReports();
         }
     </script>
 </body>
