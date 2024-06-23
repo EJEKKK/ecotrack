@@ -29,6 +29,7 @@
             data-scope="public_profile,email"
             onlogin="checkLoginState();">
         </div>
+        <button id="fb-logout-button" style="display:none;" onclick="logout()">Logout</button>
     </header>
     <main>
         <section id="home">
@@ -109,13 +110,22 @@
                 document.getElementById('reportsSection').style.display = 'block';
                 document.getElementById('leaderboardSection').style.display = 'block';
                 document.getElementById('profileSection').style.display = 'block';
+                document.getElementById('fb-logout-button').style.display = 'block';
                 loadReports();
             } else {
                 document.getElementById('reportSection').style.display = 'none';
                 document.getElementById('reportsSection').style.display = 'none';
                 document.getElementById('leaderboardSection').style.display = 'none';
                 document.getElementById('profileSection').style.display = 'none';
+                document.getElementById('fb-logout-button').style.display = 'none';
             }
+        }
+
+        function logout() {
+            FB.logout(function(response) {
+                // User is now logged out
+                statusChangeCallback(response);
+            });
         }
 
         document.getElementById('reportForm').addEventListener('submit', function(event) {
@@ -132,6 +142,7 @@
                     };
                     saveReport(report);
                     document.getElementById('reportForm').reset();
+                    console.log('Report submitted successfully');
                 };
                 reader.readAsDataURL(photo);
             } else {
