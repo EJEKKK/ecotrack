@@ -109,12 +109,54 @@
                 document.getElementById('reportsSection').style.display = 'block';
                 document.getElementById('leaderboardSection').style.display = 'block';
                 document.getElementById('profileSection').style.display = 'block';
+                loadReports();
             } else {
                 document.getElementById('reportSection').style.display = 'none';
                 document.getElementById('reportsSection').style.display = 'none';
                 document.getElementById('leaderboardSection').style.display = 'none';
                 document.getElementById('profileSection').style.display = 'none';
             }
+        }
+
+        document.getElementById('reportForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const description = document.getElementById('description').value;
+            const photo = document.getElementById('photo').files[0];
+
+            if (description && photo) {
+                const reader = new FileReader();
+                reader.onloadend = function() {
+                    const report = {
+                        description: description,
+                        photo: reader.result
+                    };
+                    saveReport(report);
+                    document.getElementById('reportForm').reset();
+                };
+                reader.readAsDataURL(photo);
+            }
+        });
+
+        function saveReport(report) {
+            let reports = JSON.parse(localStorage.getItem('reports')) || [];
+            reports.push(report);
+            localStorage.setItem('reports', JSON.stringify(reports));
+            loadReports();
+        }
+
+        function loadReports() {
+            const reports = JSON.parse(localStorage.getItem('reports')) || [];
+            const reportsContainer = document.getElementById('reports');
+            reportsContainer.innerHTML = '';
+            reports.forEach(report => {
+                const reportDiv = document.createElement('div');
+                reportDiv.className = 'report';
+                reportDiv.innerHTML = `
+                    <p>${report.description}</p>
+                    <img src="${report.photo}" alt="Report Photo" style="width:100%;max-width:300px;">
+                `;
+                reportsContainer.appendChild(reportDiv);
+            });
         }
     </script>
 </body>
