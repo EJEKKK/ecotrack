@@ -134,6 +134,8 @@
                     document.getElementById('reportForm').reset();
                 };
                 reader.readAsDataURL(photo);
+            } else {
+                console.log('Description or photo missing');
             }
         });
 
