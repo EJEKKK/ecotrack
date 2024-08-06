@@ -3,213 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ECOTRACK</title>
+    <title>EcoTrack</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <header>
-        <h1>ECOTRACK</h1>
-        <nav>
-            <ul>
-                <li><a href="#home">Home</a></li>
-                <li><a href="#reportSection">Report Issue</a></li>
-                <li><a href="#leaderboardSection">Leaderboard</a></li>
-                <li><a href="#profileSection">Profile</a></li>
-                <li><a href="#contactSection">Contact</a></li>
-            </ul>
-        </nav>
-        <div id="fb-root"></div>
-        <div class="fb-login-button" 
-            data-width="" 
-            data-size="large" 
-            data-button-type="login_with" 
-            data-layout="default" 
-            data-auto-logout-link="false" 
-            data-use-continue-as="false" 
-            data-scope="public_profile,email"
-            onlogin="checkLoginState();">
+    <div class="container">
+        <h1>Welcome to EcoTrack</h1>
+        <div class="login-container">
+            <button id="fb-login-btn">Login with Facebook</button>
         </div>
-        <button id="fb-logout-button" style="display:none;" onclick="logout()">Logout</button>
-    </header>
-    <main>
-        <section id="home">
-            <h2>Welcome to ECOTRACK</h2>
-            <p>Join us in protecting our environment by reporting local environmental issues.</p>
-        </section>
-        <section id="reportSection" style="display:none;">
-            <h2>Report Environmental Issue</h2>
-            <form id="reportForm">
-                <input type="hidden" id="reportId" name="reportId">
-                <label for="description">Description:</label>
-                <textarea id="description" name="description" required></textarea>
-                <label for="photo">Upload Photo:</label>
-                <input type="file" id="photo" name="photo" accept="image/*">
-                <button type="submit">Submit Report</button>
+        <div class="admin-container">
+            <h2>Admin Login</h2>
+            <form id="admin-login-form">
+                <input type="text" id="admin-username" placeholder="Username" required>
+                <input type="password" id="admin-password" placeholder="Password" required>
+                <button type="submit">Login</button>
             </form>
-        </section>
-        <section id="reportsSection" style="display:none;">
-            <h2>Reported Issues</h2>
-            <div id="reports"></div>
-        </section>
-        <section id="leaderboardSection" style="display:none;">
-            <h2>Leaderboard</h2>
-            <div id="leaderboard">
-                <!-- Leaderboard content will go here -->
-            </div>
-        </section>
-        <section id="profileSection" style="display:none;">
-            <h2>User Profile</h2>
-            <div id="profile">
-                <!-- User profile content will go here -->
-            </div>
-        </section>
-        <section id="contactSection">
-            <h2>Contact Us</h2>
-            <form id="contactForm">
-                <label for="name">Name:</label>
-                <input type="text" id="name" name="name" required>
-                <label for="email">Email:</label>
-                <input type="email" id="email" name="email" required>
-                <label for="message">Message:</label>
-                <textarea id="message" name="message" required></textarea>
-                <button type="submit">Send Message</button>
-            </form>
-        </section>
-    </main>
-    <footer>
-        <p>&copy; 2024 ECOTRACK. All rights reserved.</p>
-    </footer>
-    <div id="status"></div>
-    <script>
-        window.fbAsyncInit = function() {
-            FB.init({
-                appId      : '436785522663409',
-                cookie     : true,
-                xfbml      : true,
-                version    : 'v20.0'
-            });
-            FB.AppEvents.logPageView();   
-        };
+        </div>
+    </div>
 
-        (function(d, s, id){
-            var js, fjs = d.getElementsByTagName(s)[0];
-            if (d.getElementById(id)) {return;}
-            js = d.createElement(s); js.id = id;
-            js.src = "https://connect.facebook.net/en_US/sdk.js";
-            fjs.parentNode.insertBefore(js, fjs);
-        }(document, 'script', 'facebook-jssdk'));
-
-        function checkLoginState() {
-            FB.getLoginStatus(function(response) {
-                statusChangeCallback(response);
-            });
-        }
-
-        function statusChangeCallback(response) {
-            if (response.status === 'connected') {
-                document.getElementById('reportSection').style.display = 'block';
-                document.getElementById('reportsSection').style.display = 'block';
-                document.getElementById('leaderboardSection').style.display = 'block';
-                document.getElementById('profileSection').style.display = 'block';
-                document.getElementById('fb-logout-button').style.display = 'block';
-                loadReports();
-            } else {
-                document.getElementById('reportSection').style.display = 'none';
-                document.getElementById('reportsSection').style.display = 'none';
-                document.getElementById('leaderboardSection').style.display = 'none';
-                document.getElementById('profileSection').style.display = 'none';
-                document.getElementById('fb-logout-button').style.display = 'none';
-            }
-        }
-
-        function logout() {
-            FB.logout(function(response) {
-                // User is now logged out
-                statusChangeCallback(response);
-            });
-        }
-
-        document.getElementById('reportForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-            const reportId = document.getElementById('reportId').value;
-            const description = document.getElementById('description').value;
-            const photo = document.getElementById('photo').files[0];
-
-            if (description) {
-                if (photo) {
-                    const reader = new FileReader();
-                    reader.onloadend = function() {
-                        const report = {
-                            id: reportId ? parseInt(reportId) : Date.now(),
-                            description: description,
-                            photo: reader.result
-                        };
-                        saveReport(report);
-                        document.getElementById('reportForm').reset();
-                        console.log('Report submitted successfully');
-                    };
-                    reader.readAsDataURL(photo);
-                } else {
-                    const report = {
-                        id: reportId ? parseInt(reportId) : Date.now(),
-                        description: description,
-                        photo: null
-                    };
-                    saveReport(report);
-                    document.getElementById('reportForm').reset();
-                    console.log('Report submitted successfully');
-                }
-            } else {
-                console.log('Description is missing');
-            }
-        });
-
-        function saveReport(report) {
-            let reports = JSON.parse(localStorage.getItem('reports')) || [];
-            const existingReportIndex = reports.findIndex(r => r.id === report.id);
-            if (existingReportIndex !== -1) {
-                reports[existingReportIndex] = report;
-            } else {
-                reports.push(report);
-            }
-            localStorage.setItem('reports', JSON.stringify(reports));
-            loadReports();
-        }
-
-        function loadReports() {
-            const reports = JSON.parse(localStorage.getItem('reports')) || [];
-            const reportsContainer = document.getElementById('reports');
-            reportsContainer.innerHTML = '';
-            reports.forEach(report => {
-                const reportDiv = document.createElement('div');
-                reportDiv.className = 'report';
-                reportDiv.innerHTML = `
-                    <p>${report.description}</p>
-                    ${report.photo ? `<img src="${report.photo}" alt="Report Photo" style="width:100%;max-width:300px;">` : ''}
-                    <button onclick="editReport(${report.id})">Edit</button>
-                    <button onclick="deleteReport(${report.id})">Delete</button>
-                `;
-                reportsContainer.appendChild(reportDiv);
-            });
-        }
-
-        function editReport(id) {
-            const reports = JSON.parse(localStorage.getItem('reports')) || [];
-            const report = reports.find(r => r.id === id);
-            if (report) {
-                document.getElementById('reportId').value = report.id;
-                document.getElementById('description').value = report.description;
-                // Note: For photo editing, we would need to handle this differently as we can't set a file input's value programmatically
-                // You might want to add a separate input for editing the photo or inform the user that they need to re-upload the photo.
-            }
-        }
-
-        function deleteReport(id) {
-            let reports = JSON.parse(localStorage.getItem('reports')) || [];
-            reports = reports.filter(report => report.id !== id);
-            localStorage.setItem('reports', JSON.stringify(reports));
-            loadReports();
-        }
-    </script>
+    <!-- Firebase App (the core Firebase SDK) -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <!-- Firebase Auth SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
